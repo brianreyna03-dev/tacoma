@@ -1,6 +1,6 @@
 import { useReducer, useEffect, useMemo, useState } from "react";
 import { uid } from "../lib/util.js";
-import { loadData, saveData } from "../lib/storage.js";
+import { loadData, saveData, isSharedStorageEnabled } from "../lib/storage.js";
 import { exampleData } from "../lib/example.js";
 import { generateSchedule } from "../lib/scheduler.js";
 
@@ -145,17 +145,42 @@ function reducer(state, action) {
 
 export function useShiftData() {
   const [storageOK, setStorageOK] = useState(true);
+  const [loaded, setLoaded] = useState(false);
+  const sharedStorage = isSharedStorageEnabled();
 
-  // Lazy initial state: load from storage, or fall back to the example roster.
-  const [state, dispatch] = useReducer(reducer, undefined, () => {
-    const loaded = loadData();
-    return normalize(loaded || exampleData());
-  });
+  // Start with the example roster, then hydrate from shared storage/local storage.
+  const [state, dispatch] = useReducer(reducer, undefined, () =>
+    normalize(exampleData())
+  );
 
-  // Persist on every change.
   useEffect(() => {
-    if (!saveData(state)) setStorageOK(false);
-  }, [state]);
+    let cancelled = false;
+
+    async function hydrate() {
+      const loadedData = await loadData();
+      if (cancelled) return;
+      if (loadedData) dispatch({ type: "LOAD_DATA", data: loadedData });
+      setLoaded(true);
+    }
+
+    hydrate();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Persist on every change after the first load finishes.
+  useEffect(() => {
+    if (!loaded) return;
+
+    const timeout = window.setTimeout(async () => {
+      const ok = await saveData(state);
+      setStorageOK(ok);
+    }, 350);
+
+    return () => window.clearTimeout(timeout);
+  }, [state, loaded]);
 
   const actions = useMemo(
     () => ({
@@ -184,5 +209,5 @@ export function useShiftData() {
     [state.stations, state.team]
   );
 
-  return { data: state, actions, storageOK };
+  return { data: state, actions, storageOK, sharedStorage, loaded };
 }

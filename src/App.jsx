@@ -8,7 +8,7 @@ import StationsView from "./components/StationsView.jsx";
 import CoverageView from "./components/CoverageView.jsx";
 
 export default function App() {
-  const { data, actions, storageOK } = useShiftData();
+  const { data, actions, storageOK, sharedStorage } = useShiftData();
   const [tab, setTab] = useState("board");
   const [openCertId, setOpenCertId] = useState(null);
 
@@ -27,9 +27,8 @@ export default function App() {
           <div className="banner">
             <span>⚠</span>
             <span>
-              Preview mode — changes are not being saved. Run the project with
-              <code> npm run dev </code> and the Unit Plant roster will persist
-              on this device.
+              Shared sync is not saving right now. Check the Supabase environment
+              variables in Vercel, then redeploy.
             </span>
           </div>
         )}
@@ -52,7 +51,7 @@ export default function App() {
       <footer className="foot">
         <span className="foot-mark">TMMTX · UNIT PLANT</span>
         <span>Shift Coverage Control</span>
-        <span>Data stays on this device{storageOK ? " and saves automatically." : "."}</span>
+        <span>{sharedStorage ? "Data syncs for everyone" : "Data stays on this device"}{storageOK ? " and saves automatically." : "."}</span>
       </footer>
     </>
   );

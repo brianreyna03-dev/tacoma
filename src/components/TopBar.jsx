@@ -44,7 +44,12 @@ export default function TopBar({ data, actions }) {
   };
 
   const reloadExample = () => {
-    if (!window.confirm("Replace the current roster with the Unit Plant example data?")) return;
+    if (
+      !window.confirm(
+        "Replace the current roster with the Unit Plant example data?"
+      )
+    )
+      return;
     actions.loadData(exampleData());
     flash("Example roster restored");
   };
@@ -63,7 +68,7 @@ export default function TopBar({ data, actions }) {
               <span className="tmmtx-tag">TMMTX</span>
               <span>Unit Plant Operations</span>
             </div>
-            <h1>Shift Coverage Control</h1>
+            <h1>Tacoma Coverage Control</h1>
             <p>Certified staffing by process and production half</p>
           </div>
         </div>
@@ -77,7 +82,10 @@ export default function TopBar({ data, actions }) {
             hidden
             onChange={importData}
           />
-          <button className="btn ghost" onClick={() => fileRef.current?.click()}>
+          <button
+            className="btn ghost"
+            onClick={() => fileRef.current?.click()}
+          >
             Import
           </button>
           <button className="btn ghost" onClick={exportData}>
@@ -104,10 +112,16 @@ export default function TopBar({ data, actions }) {
             <strong>{data.stations.length}</strong>
           </div>
           <div className="ops-status">
-            <span className={coverageReady ? "status-light ready" : "status-light setup"} />
+            <span
+              className={
+                coverageReady ? "status-light ready" : "status-light setup"
+              }
+            />
             <div>
               <span>Board Status</span>
-              <strong>{coverageReady ? "Ready to Build" : "Setup Required"}</strong>
+              <strong>
+                {coverageReady ? "Ready to Build" : "Setup Required"}
+              </strong>
             </div>
           </div>
           <div className="ops-date">
