@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useShiftData } from "./hooks/useShiftData.js";
 import TopBar from "./components/TopBar.jsx";
 import Tabs from "./components/Tabs.jsx";
@@ -11,10 +11,35 @@ export default function App() {
   const { data, actions, storageOK, sharedStorage } = useShiftData();
   const [tab, setTab] = useState("board");
   const [openCertId, setOpenCertId] = useState(null);
+  const [sortByFirstName, setSortByFirstName] = useState(() => {
+    try {
+      return (
+        window.localStorage.getItem("shift-board:sort-first-name") !== "false"
+      );
+    } catch {
+      return true;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(
+        "shift-board:sort-first-name",
+        String(sortByFirstName)
+      );
+    } catch {
+      // Sorting preference is non-critical if browser storage is unavailable.
+    }
+  }, [sortByFirstName]);
 
   return (
     <>
-      <TopBar data={data} actions={actions} />
+      <TopBar
+        data={data}
+        actions={actions}
+        sortByFirstName={sortByFirstName}
+        setSortByFirstName={setSortByFirstName}
+      />
       <Tabs
         tab={tab}
         setTab={setTab}
@@ -34,7 +59,11 @@ export default function App() {
         )}
 
         {tab === "board" && (
-          <BoardView data={data} onGenerate={actions.generate} />
+          <BoardView
+            data={data}
+            onGenerate={actions.generate}
+            sortByFirstName={sortByFirstName}
+          />
         )}
         {tab === "team" && (
           <TeamView
@@ -42,10 +71,13 @@ export default function App() {
             actions={actions}
             openCertId={openCertId}
             setOpenCertId={setOpenCertId}
+            sortByFirstName={sortByFirstName}
           />
         )}
         {tab === "stations" && <StationsView data={data} actions={actions} />}
-        {tab === "coverage" && <CoverageView data={data} />}
+        {tab === "coverage" && (
+          <CoverageView data={data} sortByFirstName={sortByFirstName} />
+        )}
       </main>
 
       <footer className="foot">
