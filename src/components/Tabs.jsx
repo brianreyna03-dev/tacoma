@@ -1,6 +1,7 @@
 const items = [
   { id: "board", label: "Coverage Board", shortLabel: "Board" },
   { id: "team", label: "Team Members", shortLabel: "Team" },
+  { id: "map", label: "Team Map", shortLabel: "Map" },
   { id: "stations", label: "Unit Processes", shortLabel: "Processes" },
   { id: "coverage", label: "Certifications", shortLabel: "Certs" },
 ];
