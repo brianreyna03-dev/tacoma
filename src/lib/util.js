@@ -27,6 +27,20 @@ export function allCategories(stations) {
   return set;
 }
 
+export function compareFirstName(a, b) {
+  const nameA = String(a?.name ?? a ?? "").trim();
+  const nameB = String(b?.name ?? b ?? "").trim();
+  const firstA = nameA.split(/\s+/)[0] || "";
+  const firstB = nameB.split(/\s+/)[0] || "";
+  return (
+    firstA.localeCompare(firstB, undefined, {
+      sensitivity: "base",
+      numeric: true,
+    }) ||
+    nameA.localeCompare(nameB, undefined, { sensitivity: "base", numeric: true })
+  );
+}
+
 export function nameFor(team, id) {
   const person = team.find((candidate) => candidate.id === id);
   return person ? person.name : "—";
