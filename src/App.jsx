@@ -6,6 +6,7 @@ import BoardView from "./components/BoardView.jsx";
 import TeamView from "./components/TeamView.jsx";
 import StationsView from "./components/StationsView.jsx";
 import CoverageView from "./components/CoverageView.jsx";
+import MapView from "./components/MapView.jsx";
 
 export default function App() {
   const { data, actions, storageOK, sharedStorage } = useShiftData();
@@ -34,12 +35,7 @@ export default function App() {
 
   return (
     <>
-      <TopBar
-        data={data}
-        actions={actions}
-        sortByFirstName={sortByFirstName}
-        setSortByFirstName={setSortByFirstName}
-      />
+      <TopBar data={data} actions={actions} />
       <Tabs
         tab={tab}
         setTab={setTab}
@@ -72,8 +68,10 @@ export default function App() {
             openCertId={openCertId}
             setOpenCertId={setOpenCertId}
             sortByFirstName={sortByFirstName}
+            setSortByFirstName={setSortByFirstName}
           />
         )}
+        {tab === "map" && <MapView data={data} actions={actions} />}
         {tab === "stations" && <StationsView data={data} actions={actions} />}
         {tab === "coverage" && (
           <CoverageView data={data} sortByFirstName={sortByFirstName} />
