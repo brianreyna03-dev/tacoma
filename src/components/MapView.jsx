@@ -291,7 +291,6 @@ export default function MapView({ data, actions }) {
           </div>
         </section>
       )}
-
       <p className="hint map-hint">
         Map matching recognizes names such as <b>Station 1–9</b>, <b>PM 1–3</b>,
         <b>Sub 1–4</b>, and <b>Kick out</b>. Zone 1 is yellow, Zone 2 is blue,
@@ -299,3 +298,4 @@ export default function MapView({ data, actions }) {
       </p>
     </>
   );
+}
