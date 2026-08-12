@@ -56,11 +56,15 @@ function tryAssign(st, matchP, visited, can, order) {
   return false;
 }
 
-export function generateSchedule(stations, team) {
-  const active = team.filter((p) => !p.pto);
+export function generateSchedule(stations, team, teamLeaders = {}) {
+  const reservedLeaderIds = new Set(Object.values(teamLeaders).filter(Boolean));
+  const active = team.filter((p) => !p.pto && !reservedLeaderIds.has(p.id));
   const nS = stations.length;
   const nP = active.length;
-  const ptoCount = team.length - nP;
+  const ptoCount = team.filter((p) => p.pto).length;
+  const activeLeaderCount = team.filter(
+    (p) => !p.pto && reservedLeaderIds.has(p.id)
+  ).length;
 
   // certification matrix: can[personIndex][stationIndex]
   const can = active.map((p) => {
@@ -129,6 +133,7 @@ export function generateSchedule(stations, team) {
     stats: {
       nS,
       working: nP,
+      leaders: activeLeaderCount,
       pto: ptoCount,
     },
   };
