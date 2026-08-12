@@ -1,4 +1,4 @@
-import { usedCategories, nameFor, todayStr } from "../lib/util.js";
+import { compareFirstName, usedCategories, nameFor, todayStr } from "../lib/util.js";
 
 function EmptyState({ big, sub }) {
   return (
@@ -20,7 +20,7 @@ function Slot({ personId, team }) {
   );
 }
 
-export default function BoardView({ data, onGenerate }) {
+export default function BoardView({ data, onGenerate, sortByFirstName }) {
   const { stations, team, schedule } = data;
   const stats = schedule?.stats;
   const segments = schedule?.segments;
@@ -185,7 +185,14 @@ export default function BoardView({ data, onGenerate }) {
             <div className="fcol" key={seg.key}>
               <span className="lbl">{seg.label} Floaters</span>
               {seg.float.length ? (
-                seg.float.map((id) => (
+                (sortByFirstName
+                  ? seg.float
+                      .map((id) => team.find((person) => person.id === id))
+                      .filter(Boolean)
+                      .sort(compareFirstName)
+                      .map((person) => person.id)
+                  : seg.float
+                ).map((id) => (
                   <span className="pill" key={id}>{nameFor(team, id)}</span>
                 ))
               ) : (
