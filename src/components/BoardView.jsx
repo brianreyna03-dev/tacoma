@@ -45,7 +45,10 @@ export default function BoardView({ data, onGenerate, sortByFirstName }) {
                 {seg.label} <b>{seg.filled}/{stats.nS}</b>
               </span>
             ))}
-            <span className="stat neutral"><b>{stats.working}</b> active</span>
+            <span className="stat neutral"><b>{stats.working}</b> station-ready</span>
+            {stats.leaders > 0 && (
+              <span className="stat neutral"><b>{stats.leaders}</b> team leaders</span>
+            )}
             <span className="stat neutral"><b>{stats.pto}</b> PTO</span>
           </div>
         ) : (
