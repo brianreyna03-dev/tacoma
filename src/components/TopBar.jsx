@@ -2,7 +2,12 @@ import { useRef, useState } from "react";
 import { exampleData } from "../lib/example.js";
 import { todayStr } from "../lib/util.js";
 
-export default function TopBar({ data, actions }) {
+export default function TopBar({
+  data,
+  actions,
+  sortByFirstName,
+  setSortByFirstName,
+}) {
   const fileRef = useRef(null);
   const [notice, setNotice] = useState("");
 
@@ -93,6 +98,17 @@ export default function TopBar({ data, actions }) {
           </button>
           <button className="btn ghost" onClick={reloadExample}>
             Demo roster
+          </button>
+          <button
+            className={
+              "btn ghost sort-names" + (sortByFirstName ? " active" : "")
+            }
+            aria-pressed={sortByFirstName}
+            title="Sort people lists alphabetically by first name"
+            onClick={() => setSortByFirstName((current) => !current)}
+          >
+            <span aria-hidden="true">A→Z</span>
+            {sortByFirstName ? "First names sorted" : "Sort first names"}
           </button>
         </div>
       </div>
