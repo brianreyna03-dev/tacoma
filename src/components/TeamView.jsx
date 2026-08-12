@@ -1,7 +1,14 @@
 import { useState } from "react";
 import PersonCard from "./PersonCard.jsx";
+import { compareFirstName } from "../lib/util.js";
 
-export default function TeamView({ data, actions, openCertId, setOpenCertId }) {
+export default function TeamView({
+  data,
+  actions,
+  openCertId,
+  setOpenCertId,
+  sortByFirstName,
+}) {
   const [name, setName] = useState("");
 
   const add = () => {
@@ -13,6 +20,9 @@ export default function TeamView({ data, actions, openCertId, setOpenCertId }) {
 
   const active = data.team.filter((person) => !person.pto).length;
   const onPto = data.team.length - active;
+  const displayedTeam = sortByFirstName
+    ? [...data.team].sort(compareFirstName)
+    : data.team;
 
   return (
     <>
@@ -55,7 +65,7 @@ export default function TeamView({ data, actions, openCertId, setOpenCertId }) {
         </div>
       ) : (
         <div className="roster">
-          {data.team.map((person) => (
+          {displayedTeam.map((person) => (
             <PersonCard
               key={person.id}
               person={person}
