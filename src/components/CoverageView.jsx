@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { usedCategories } from "../lib/util.js";
+import { compareFirstName, usedCategories } from "../lib/util.js";
 
 function initialsOf(name) {
   return (
@@ -13,7 +13,7 @@ function initialsOf(name) {
   );
 }
 
-export default function CoverageView({ data }) {
+export default function CoverageView({ data, sortByFirstName }) {
   const { stations, team } = data;
   const [query, setQuery] = useState("");
   const [availableOnly, setAvailableOnly] = useState(false);
@@ -21,7 +21,7 @@ export default function CoverageView({ data }) {
   const q = query.trim().toLowerCase();
 
   // For each station, the certified members (optionally only those on shift),
-  // sorted with on-shift members first, then alphabetically.
+  // sorted by first name when the global A–Z option is enabled.
   const certifiedByStation = useMemo(() => {
     const map = new Map();
     stations.forEach((station) => {
@@ -29,14 +29,15 @@ export default function CoverageView({ data }) {
         .filter((person) => person.certs.includes(station.id))
         .filter((person) => (availableOnly ? !person.pto : true))
         .slice()
-        .sort(
-          (a, b) =>
-            Number(a.pto) - Number(b.pto) || a.name.localeCompare(b.name)
+        .sort((a, b) =>
+          sortByFirstName
+            ? compareFirstName(a, b)
+            : Number(a.pto) - Number(b.pto) || a.name.localeCompare(b.name)
         );
       map.set(station.id, members);
     });
     return map;
-  }, [stations, team, availableOnly]);
+  }, [stations, team, availableOnly, sortByFirstName]);
 
   const availableCount = (stationId) =>
     team.filter((person) => !person.pto && person.certs.includes(stationId))
