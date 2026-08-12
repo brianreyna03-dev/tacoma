@@ -27,7 +27,20 @@ function normalize(d) {
     data.schedule && Array.isArray(data.schedule.segments)
       ? data.schedule
       : null;
-  return { stations, team, schedule };
+
+  const teamIds = new Set(team.map((person) => person.id));
+  const sourceLeaders = data.teamLeaders || {};
+  const teamLeaders = { zone1: null, zone2: null, zone3: null };
+  const usedLeaderIds = new Set();
+  for (const zone of Object.keys(teamLeaders)) {
+    const id = sourceLeaders[zone];
+    if (id && teamIds.has(id) && !usedLeaderIds.has(id)) {
+      teamLeaders[zone] = id;
+      usedLeaderIds.add(id);
+    }
+  }
+
+  return { stations, team, schedule, teamLeaders };
 }
 
 function reducer(state, action) {
@@ -41,8 +54,20 @@ function reducer(state, action) {
         ],
       };
 
-    case "REMOVE_PERSON":
-      return { ...state, team: state.team.filter((p) => p.id !== action.id) };
+    case "REMOVE_PERSON": {
+      const teamLeaders = Object.fromEntries(
+        Object.entries(state.teamLeaders || {}).map(([zone, id]) => [
+          zone,
+          id === action.id ? null : id,
+        ])
+      );
+      return {
+        ...state,
+        team: state.team.filter((p) => p.id !== action.id),
+        teamLeaders,
+        schedule: null,
+      };
+    }
 
     case "RENAME_PERSON":
       return {
@@ -59,6 +84,25 @@ function reducer(state, action) {
           p.id === action.id ? { ...p, pto: action.pto } : p
         ),
       };
+
+    case "SET_TEAM_LEADER": {
+      const teamLeaders = {
+        zone1: state.teamLeaders?.zone1 || null,
+        zone2: state.teamLeaders?.zone2 || null,
+        zone3: state.teamLeaders?.zone3 || null,
+      };
+
+      // A person can lead only one zone. Moving them to a new zone clears the old one.
+      if (action.personId) {
+        for (const zone of Object.keys(teamLeaders)) {
+          if (teamLeaders[zone] === action.personId) teamLeaders[zone] = null;
+        }
+      }
+      teamLeaders[action.zone] = action.personId || null;
+
+      // Team leaders are reserved from process assignments, so rebuild coverage.
+      return { ...state, teamLeaders, schedule: null };
+    }
 
     case "TOGGLE_CERT":
       return {
@@ -188,6 +232,8 @@ export function useShiftData() {
       removePerson: (id) => dispatch({ type: "REMOVE_PERSON", id }),
       renamePerson: (id, name) => dispatch({ type: "RENAME_PERSON", id, name }),
       setPTO: (id, pto) => dispatch({ type: "SET_PTO", id, pto }),
+      setTeamLeader: (zone, personId) =>
+        dispatch({ type: "SET_TEAM_LEADER", zone, personId }),
       toggleCert: (personId, stationId) =>
         dispatch({ type: "TOGGLE_CERT", personId, stationId }),
       setCategoryCerts: (personId, category, on) =>
@@ -201,12 +247,16 @@ export function useShiftData() {
       generate: () =>
         dispatch({
           type: "SET_SCHEDULE",
-          schedule: generateSchedule(state.stations, state.team),
+          schedule: generateSchedule(
+            state.stations,
+            state.team,
+            state.teamLeaders
+          ),
         }),
       loadData: (data) => dispatch({ type: "LOAD_DATA", data }),
     }),
     // generate() reads the current stations/team, so refresh when they change
-    [state.stations, state.team]
+    [state.stations, state.team, state.teamLeaders]
   );
 
   return { data: state, actions, storageOK, sharedStorage, loaded };
