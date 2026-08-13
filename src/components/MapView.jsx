@@ -165,6 +165,17 @@ export default function MapView({ data, actions }) {
 
   return (
     <>
+      <div className="map-date">
+  <span>PRODUCTION DATE</span>
+  <strong>
+    {new Date().toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    })}
+  </strong>
+</div>
       <div className="panel-head map-panel-head">
         <div>
           <span className="section-kicker">Live Floor Positioning</span>
