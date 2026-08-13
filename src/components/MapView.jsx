@@ -29,12 +29,14 @@ const numberedMatch = (kind, number) => (name) => {
       new RegExp(`\\bsub\\s*(?:assembly|line|station)\\s*(?:${num}|${padded})\\b`).test(n)
     );
   }
-  if (kind === "pm") {
-    return (
-      new RegExp(`\\bpm\\s*(?:${num}|${padded})\\b`).test(n) ||
-      new RegExp(`\\bparts?\\s*management\\s*(?:${num}|${padded})\\b`).test(n)
-    );
-  }
+if (kind === "pm") {
+  return (
+    new RegExp(`\\bpm\\s*(?:${num}|${padded})\\b`).test(n) ||
+    new RegExp(
+      `\\bparts?\\s*(?:management|mgmt)\\s*(?:${num}|${padded})\\b`
+    ).test(n)
+  );
+}
   return false;
 };
 
