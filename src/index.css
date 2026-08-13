@@ -2236,3 +2236,27 @@ main .btn.ghost.sort-names.active {
     padding: 18px;
   }
 }
+.person-name-edit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 5px;
+}
+
+.person-name-edit input {
+  width: 260px;
+  max-width: 100%;
+  min-height: 38px;
+  padding: 7px 10px;
+  border: 1px solid var(--line-strong);
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 800;
+}
+
+.person-name-edit input:focus {
+  outline: 2px solid var(--plant-red);
+  outline-offset: 1px;
+}
