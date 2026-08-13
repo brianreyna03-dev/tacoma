@@ -2260,3 +2260,23 @@ main .btn.ghost.sort-names.active {
   outline: 2px solid var(--plant-red);
   outline-offset: 1px;
 }
+
+.map-date {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.map-date span {
+  color: var(--plant-red);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.map-date strong {
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 900;
+}
