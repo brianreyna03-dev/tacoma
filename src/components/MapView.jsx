@@ -684,10 +684,8 @@ export default function MapView({
         as <b>Station 1–9</b>,{" "}
         <b>Parts Mgmt 1–3</b>,{" "}
         <b>PM 1–3</b>, <b>Sub 1–4</b>,
-        and <b>Kick out</b>. Zone 1 is
-        yellow, Zone 2 is blue, and Zone 3
-        is peach to match the team-leader
-        coverage areas.
+        and <b>Kick out</b>. Zone 1 is yellow, Zone 2 is dark red, and Zone 3
+is orange
       </p>
     </>
   );
