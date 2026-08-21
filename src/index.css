@@ -1891,16 +1891,16 @@ main .btn.ghost.sort-names.active {
   margin-bottom: 16px;
 }
 
-.map-zone-1 {
-  background: #fff9b8;
+8.map-zone-1 {
+  background: #fff9b8; /* yellow */
 }
 
 .map-zone-2 {
-  background: #bfe4f4;
+  background: #b71c1c; /* darker red */
 }
 
 .map-zone-3 {
-  background: #f8dfd0;
+  background: #f28c28; /* orange */
 }
 
 .plant-map-scroll {
